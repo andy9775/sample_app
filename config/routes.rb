@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  # calling context is: #<ActionDispatch::Routing::Mapper:0x007f8114f55b80>
+  # a class instance
+  # has methods of ActionDispatch::Routing::Mapper -> get, resources, ...
+
   root 'static_pages#home'
 
   get '/help', to: 'static_pages#help'
@@ -11,4 +15,6 @@ Rails.application.routes.draw do
   get '/about', to: 'static_pages#about'
   get '/contact', to: 'static_pages#contact'
   get '/signup', to: 'users#new'
+	post '/signup', to: 'users#create'
+  resources :users
 end
