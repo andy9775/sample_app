@@ -38,4 +38,22 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     get root_path
     assert flash.empty?
   end
+
+  test 'login with remembering' do
+    # log_in_as helper posts to /login which is handled by
+    # session_controller.create. The create method creates an instance of @user
+    # which we can access using assigns. We fetch the remember_token from the
+    # user and compare it to the value set in the cookies
+    log_in_as @user, remember_me: '1'
+    # cookie should be set to the virtual attribute remember_token
+    assert_equal cookies['remember_token'], assigns(:user).remember_token
+  end
+
+  test 'login without remembering' do
+    # login to set the cookie
+    log_in_as @user, remember_me: '1'
+    # Login again to verify the cookie is deleted
+    log_in_as @user, remember_me: '0'
+    assert_empty cookies['remember_token']
+  end
 end
