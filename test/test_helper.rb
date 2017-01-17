@@ -1,4 +1,11 @@
 ENV['RAILS_ENV'] ||= 'test'
+require 'simplecov'
+require 'simplecov-json'
+SimpleCov.formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::JSONFormatter
+]
+SimpleCov.start 'rails' # load before application is required
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'minitest/reporters'
