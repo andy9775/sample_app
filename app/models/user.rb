@@ -8,8 +8,14 @@ class User < ApplicationRecord
                     format: { with:
                       /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i },
                     uniqueness: { case_sensitive: false }
+
+  # has internal check for empty password on signup when no password exists
   has_secure_password # class methods
-  validates :password, presence: true, length: { minimum: 6 }
+
+  validates :password,
+            presence: true,
+            length: { minimum: 6 },
+            allow_nil: true # when editing - allow for empty passwords
 
   # Remembers a user in the database for use in persistent sessions
   def remember

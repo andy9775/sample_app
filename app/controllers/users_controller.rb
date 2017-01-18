@@ -1,6 +1,10 @@
 # user controller
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show]
+  before_action :set_user, only: [:show, :edit, :update, :correct_user]
+  before_action :logged_in_user, only: [:edit, :update]
+  before_action :correct_user, only: [:edit, :update]
+
+  def show; end
 
   def new
     @user = User.new
@@ -18,7 +22,16 @@ class UsersController < ApplicationController
     end
   end
 
-  def show; end
+  def edit; end
+
+  def update
+    if @user.update_attributes(user_params)
+      flash[:success] = 'Profile updated'
+      redirect_to @user
+    else
+      render 'edit'
+    end
+  end
 
   private
 
@@ -35,5 +48,18 @@ class UsersController < ApplicationController
         :password,
         :password_confirmation
       )
+  end
+
+  def logged_in_user
+    return if logged_in?
+    # if a user is not logged in, save their intended destination and redirect
+    # later
+    store_location
+    flash[:danger] = 'Please log in'
+    redirect_to login_url
+  end
+
+  def correct_user
+    redirect_to(root_url) unless current_user? @user
   end
 end
