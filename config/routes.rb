@@ -21,6 +21,11 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
   resources :users, except: [:new] # disable /users/new route
 
+  # we can also specify the path. This creates /u/... paths rather than /users
+  # an alternative could be to have path: '' which eliminates the controller
+  # name from the URL
+  # resources :users, except: [:new], path: 'u' # disable /users/new route
+
   # we can also specify custom parameters to show up in the url
   # resources :users, except: [:new], param: :email
 end

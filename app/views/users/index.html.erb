@@ -3,11 +3,16 @@
 <h1>All users</h1>
 <%= will_paginate %>
 <ul class="users">
-	<% @users.each do |user| %>
-	<li>
-		<%= gravatar_for user, size: 50 %>
-		<%= link_to user.name, user %>
-	</li>
-	<% end %>
+	<!-- <% @users.each do |user| %>
+	<%# rails automatically infers the template name from the variable name and
+			passes the variable to the partial %>
+	<%= render user %>
+	<% end %> -->
+
+	<%# rails automatically detects that the @users object is a list of users and
+	 		it calls the partial for each entry in the list while assuming that the
+			partial name is the name of the class (User in this case from the User
+			model) %>
+	<%= render @users %>
 </ul>
 <%= will_paginate %>
