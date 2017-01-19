@@ -40,7 +40,8 @@ module SessionsHelper
       @current_user ||= User.find_by(id: user_id)
     elsif (user_id = cookies.signed[:user_id]) # long term session cookie
       user = User.find_by(id: user_id)
-      if user && user.authenticated?(cookies[:remember_token]) # is valid?
+      # is valid?
+      if user && user.authenticated?(:remember, cookies[:remember_token])
         log_in user # log user in and set a session
         @current_user = user
       end

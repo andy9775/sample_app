@@ -1,8 +1,9 @@
 class User < ApplicationRecord
+  attr_accessor :remember_token, :activation_token
   # self.email = self.email.downcase
   # self.email = email.downcase
   before_save { email.downcase! }
-  attr_accessor :remember_token
+  before_create :create_activation_digest
   validates :name, presence: true, length: { maximum: 50 }
   validates :email, presence: true, length: { maximum: 225 },
                     format: { with:
@@ -29,15 +30,20 @@ class User < ApplicationRecord
   end
 
   # Returns true if the given token matches the digest
-  # Uses the users remember_digest to compare against the provided
-  # remember_token to determine if they are the same thing
-  def authenticated?(remember_token)
-    # if the remember digest is not set (e.g. we logout of one browser which
-    # sets it to nil see forget method above) then we know that the user is not
-    # authenticated
-    return false if remember_digest.nil?
-    # remember_digest refers to self.remember_digest - the DB column
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = send "#{attribute}_digest"
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
+  end
+
+  # activates an account
+  def activate
+    update_columns activated: true, activated_at: Time.zone.now
+  end
+
+  # sends an activation email
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
   end
 
   # class methods
@@ -53,5 +59,12 @@ class User < ApplicationRecord
     def new_token
       SecureRandom.urlsafe_base64
     end
+  end
+
+  private
+
+  def create_activation_digest
+    self.activation_token = User.new_token
+    self.activation_digest = User.digest activation_token
   end
 end

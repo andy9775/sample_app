@@ -28,4 +28,6 @@ Rails.application.routes.draw do
 
   # we can also specify custom parameters to show up in the url
   # resources :users, except: [:new], param: :email
+
+  resources :account_activations, only: [:edit]
 end
