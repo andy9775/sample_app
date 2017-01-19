@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  attr_accessor :remember_token, :activation_token
+  attr_accessor :remember_token, :activation_token, :reset_token
   # self.email = self.email.downcase
   # self.email = email.downcase
   before_save { email.downcase! }
@@ -44,6 +44,25 @@ class User < ApplicationRecord
   # sends an activation email
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
+  end
+
+  # create the password reset digest
+  def create_reset_digest
+    self.reset_token = User.new_token
+    # calling update individually doesn't call validations not does
+    # update_columns
+    update_columns reset_digest: User.digest(reset_token),
+                   reset_sent_at: Time.zone.now
+  end
+
+  # send the password reset email
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
+  end
+
+  # determine if the password reset link was sent earlier than 2 hours ago
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
   end
 
   # class methods
