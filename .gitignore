@@ -25,3 +25,5 @@
 
 # Igonre test coverage files
 coverage
+
+/public/uploads
