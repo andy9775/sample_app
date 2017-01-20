@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :microposts, dependent: :destroy # delete posts on user delete
   attr_accessor :remember_token, :activation_token, :reset_token
   # self.email = self.email.downcase
   # self.email = email.downcase
@@ -63,6 +64,10 @@ class User < ApplicationRecord
   # determine if the password reset link was sent earlier than 2 hours ago
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
+  end
+
+  def feed
+    Micropost.where 'user_id = ?', id # self.id
   end
 
   # class methods
