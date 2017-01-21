@@ -7,7 +7,7 @@ class User < ApplicationRecord
                                    foreign_key: 'followed_id',
                                    dependent: :destroy
   has_many :following, through: :active_relationships, source: :followed
-  
+
   # ===============
   # source: :follower can be omitted as rails singularizes :followers to
   # :follower and looks for 'follower_id' in the relationships table
@@ -82,6 +82,13 @@ class User < ApplicationRecord
 
   def feed
     Micropost.where 'user_id = ?', id # self.id
+  end
+
+  def feed
+    following_ids = 'SELECT followed_id FROM relationships WHERE follower_id =
+      :user_id'
+    Micropost.where "user_id IN (#{following_ids}) or user_id = :user_id",
+                    user_id: id
   end
 
   # follow another user
