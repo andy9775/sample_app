@@ -13,6 +13,12 @@ class UsersProfileTest < ActionDispatch::IntegrationTest
     assert_select 'title', full_title(@user.name)
     assert_select 'h1', text: @user.name
     assert_select 'h1>img.gravatar'
+    # check for followers/following links
+    assert_select 'a:match("href", ?)', /\/users\/\d*\/following/i
+    assert_select 'a:match("href", ?)', /\/users\/\d*\/followers/i
+    assert_select '#following', text: @user.following.count.to_s
+    assert_select '#followers', text: @user.followers.count.to_s
+    #
     assert_match @user.microposts.count.to_s, response.body
     assert_select 'div.pagination'
     @user.microposts.paginate(page: 1).each do |micropost|

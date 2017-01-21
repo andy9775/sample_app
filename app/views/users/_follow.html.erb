@@ -1,0 +1,13 @@
+<%#
+Creates an endpoint which sends a POST request to ''/relationship'.
+
+a hidden field is necessary in order to determine which user should be followed.
+In this case, the page of the user being viewed. Once submitted, a new
+relationship is created based on the current_user and @user respective ID's
+ %>
+<%= form_for current_user.active_relationships.build, remote: true do |f| %>
+
+<div><%= hidden_field_tag :followed_id, @user.id %></div>
+
+<%= f.submit 'Follow', class: 'btn btn-primary' %>
+<% end %>

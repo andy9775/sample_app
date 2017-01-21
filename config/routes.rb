@@ -19,7 +19,23 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
-  resources :users, except: [:new] # disable /users/new route
+  resources :users, except: [:new] do # disable /users/new route
+    # allows for each user to have a get endpoint for a list of followers and
+    # those who the user is following e.g. /users/1/following and
+    # /users/1/followers. In this case each 'member' has the set endpoints
+    member do
+      # actions are defined in the users controller
+      get :following, :followers
+    end
+  end
+
+  # the other option for routes is
+  # resources :users do
+  #  collection do
+  #     get :tigers
+  #  end
+  # end
+  # which creates an end point /users/tigers which applies to all users
 
   # we can also specify the path. This creates /u/... paths rather than /users
   # an alternative could be to have path: '' which eliminates the controller
@@ -32,4 +48,5 @@ Rails.application.routes.draw do
   resources :account_activations, only: [:edit]
   resources :password_resets, only: [:new, :create, :edit, :update]
   resources :microposts, only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy]
 end

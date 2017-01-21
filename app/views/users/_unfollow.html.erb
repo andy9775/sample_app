@@ -1,0 +1,11 @@
+<%#
+creates an endpoint /relationships/:id to delete a particular relationship.
+The id for the relationship is fetched from the active_relationships association
+by searching by the id of the users profile page being viewed as associated with
+current_user.
+ %>
+<%= form_for current_user.active_relationships.find_by(followed_id: @user.id),
+  html: { method: :delete },
+  remote: true do |f| %>
+<%= f.submit 'Unfollow', class: 'btn' %>
+<% end %>
