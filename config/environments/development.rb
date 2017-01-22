@@ -57,4 +57,6 @@ Rails.application.configure do
 
   # generate javascript files and not cofeescript
   config.generators.javascript_engine = :js
+
+   config.middleware.insert_after ActionDispatch::Static, Rack::LiveReload
 end
